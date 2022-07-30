@@ -1,0 +1,26 @@
+{% block content %}
+
+
+<hr>
+<h1>News comments</h1>
+<div>
+    {% if user.is_active %}
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ com_form.as_p }}
+        <input type="submit" value="Add comment"/>
+    </form>
+    {% else %}
+    <h2>You need to sign, to leave a review</h2>
+    {% endif %}
+    <hr>
+
+    {% for comment in comments %}
+    <p>Comment: {{comment.text}}</p>
+    <p1>User: {{comment.user}} |</p1>
+    <p2>Date: {{comment.time_create|date:"d-m-Y"}}</p2><br><br>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

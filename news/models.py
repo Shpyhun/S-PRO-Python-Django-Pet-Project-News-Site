@@ -1,0 +1,69 @@
+from django.contrib.auth.models import User
+from django.db import models
+from django.urls import reverse
+
+
+class News(models.Model):
+    """Model presenting the news"""
+    title = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=100, unique=True, db_index=True, verbose_name="URL")
+    content = models.TextField(blank=True)
+    photo = models.ImageField(upload_to='photo/%Y/%m/%d/')
+    time_create = models.DateTimeField(auto_now_add=True)
+    time_update = models.DateTimeField(auto_now=True)
+    is_published = models.BooleanField(default=True)
+    category = models.ForeignKey('Category', on_delete=models.PROTECT, null=True)
+    # user = models.ForeignKey(User, verbose_name='User', on_delete=models.CASCADE)
+    likes = models.ManyToManyField(User)
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse('news', kwargs={'news_slug': self.slug})
+
+    class Meta:
+        verbose_name = 'News'
+        verbose_name_plural = 'News'
+        ordering = ['id']
+
+
+class Category(models.Model):
+    """News category model"""
+    name = models.CharField(max_length=100, db_index=True)
+    slug = models.SlugField(max_length=100, unique=True, db_index=True, verbose_name="URL")
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('category', kwargs={'category_slug': self.slug})
+
+    class Meta:
+        verbose_name = 'Category'
+        verbose_name_plural = 'Categories'
+        ordering = ['id']
+
+
+class Profile(models.Model):
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, blank=True, null=True)
+
+    def __str__(self):
+        return self.user
+
+    def get_absolute_url(self):
+        return reverse('profile', kwargs={'profile_id': self.pk})
+
+
+class CommentNews(models.Model):
+    """News comment model"""
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    news = models.ForeignKey(News, on_delete=models.SET_NULL, null=True)
+    text = models.TextField(max_length=500)
+    time_create = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Comment'
+        verbose_name_plural = 'Comments'

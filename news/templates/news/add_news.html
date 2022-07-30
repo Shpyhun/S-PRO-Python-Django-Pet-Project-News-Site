@@ -1,0 +1,19 @@
+{% extends 'news/base.html' %}
+
+{% block content %}
+
+<body>
+<h1>Add news</h1>
+<div>
+    <form action="{% url 'news_list' %}" method="post">
+        {% csrf_token %}
+        {{ post_form.as_p }}
+        <input type="submit" value="Add news"/>
+
+    </form>
+
+</div>
+
+</body>
+
+{% endblock %}

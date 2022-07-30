@@ -1,0 +1,19 @@
+{% extends 'news/base.html' %}
+
+{% block content %}
+
+<body>
+<h1>Contents of the news</h1>
+<div>
+    <h2>{{news.title}}</h2>
+    <p>{{news.content}}</p>
+
+    <p2>Date add: {{news.time_update|date:"d-m-Y"}}</p2><br><br>
+    <button><a href="#">News author</a></button> <button><a href="{% url 'news_list' %}">News list</a></button>
+
+
+</div>
+{% include 'news/comment.html' %}
+</body>
+{% endblock %}
+

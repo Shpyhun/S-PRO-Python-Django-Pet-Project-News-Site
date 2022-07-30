@@ -2,3 +2,6 @@ Django>=3.0,<4.0
 psycopg2>=2.8
 celery>=5.0
 redis>=3.5
+Pillow>=9.0
+djangorestframework>=3.9,<3.13.1
+fontawesomefree==6.1.2

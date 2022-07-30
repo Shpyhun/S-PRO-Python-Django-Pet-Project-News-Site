@@ -11,6 +11,8 @@ services:
     image: postgres
     volumes:
       - pgdata:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
@@ -35,7 +37,7 @@ services:
     restart: always
     build:
       context: .
-    command: celery -A core worker -l INFO
+    command: celery -A core worker -l DEBUG
     volumes:
       - .:/docker
     environment:

@@ -1,0 +1,17 @@
+{% extends 'news/base.html' %}
+
+{% block content %}
+
+<body>
+    <h1>Newss list</h1>
+{% for a_news in news %}
+<div>
+    <h2>{{a_news.title}}</h2>
+    <p>{{a_news.content | slice:100}}</p>
+{% endfor %}
+
+    <button><a href="{% url 'news_list' %}">News list</a></button><br><br>
+    <button><a onclick="history.back();return false;">goBack</a></button></div>
+</body>
+
+{% endblock %}

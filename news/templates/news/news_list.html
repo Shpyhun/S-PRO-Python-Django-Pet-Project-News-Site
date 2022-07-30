@@ -1,0 +1,18 @@
+{% extends 'news/base.html' %}
+
+{% block content %}
+
+<body>
+<h1>News list</h1>
+{% for a_news in news %}
+<div>
+    <h2>{{a_news.title | upper}}</h2>
+    <p>{{a_news.content | slice:100}}</p>
+    <p1>Date add: {{a_news.time_update|date:"d-m-Y"}}</p1><br><br>
+    <button><a href="{% url 'news_detail' a_news.id %}">Read more</a></button>
+    <hr>
+</div>
+{% endfor %}
+
+{% endblock %}
+
