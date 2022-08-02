@@ -30,9 +30,9 @@ class NewsView(View):
 
     def get(self, request):
         news = News.objects.all().order_by('-id')
-        if request.method == "GET" and 'search' in request.GET:
-            search = request.GET['search']
-            news = news.filter(title__icontains=search)
+        if request.method == "GET" and 'qwerty' in request.GET:
+            qwerty = request.GET['qwerty']
+            news = news.filter(title__icontains=qwerty)
         context = {
             'menu': menu,
             'news': news,
@@ -43,8 +43,8 @@ class NewsView(View):
         return render(request, 'news/news_list.html', context=context)
 
 
-def news_detail(request, news_slug):
-    news = get_object_or_404(News, slug=news_slug)
+def news_detail(request, index):
+    news = get_object_or_404(News, pk=index)
     comments = Comment.objects.filter(news=news)
     if request.method == 'POST':
         form = CommentForm(request.POST)
@@ -74,7 +74,7 @@ def user_info(request, user):
 
 class AddNewsView(View):
     def post(self, request):
-        form = AddNewsForm(request.POST)
+        form = AddNewsForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             news = News.objects.all().order_by('-id')
@@ -103,23 +103,23 @@ class ViewCategory(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title='Category - ' + str(context['news'][0].category),
-                                      category_selected=context['news'][0].category_id)
+                                      category_selected=context['news'][0].category_slug)
         return dict(list(context.items()) + list(c_def.items()))
 
 
 def view_category(request, category_slug):
-    news = News.objects.filter(slug=category_slug)
+    news = News.objects.filter(pk=category_slug)
     categories = Category.objects.all()
 
-    if len(news) == 0:
-        raise Http404()
+    # if len(news) == 0:
+    #     raise Http404()
 
     context = {
         'menu': menu,
         'news': news,
         'title': 'View by topics',
         'categories': categories,
-        'categories_selected': news.category_slug,
+        'categories_selected': category_slug,
     }
 
     return render(request, 'news/news_list.html', context=context)

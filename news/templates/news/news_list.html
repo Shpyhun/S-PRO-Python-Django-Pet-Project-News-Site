@@ -18,7 +18,7 @@
     <li><h2>{{a_news.title}}</h2>
     <p>{{a_news.content | slice:300}}</p>
 
-        <p class="link-read-post"><a href="{% url 'news_detail' a_news.slug %}">Read more</a></p>
+        <p class="link-read-post"><a href="{% url 'news_detail' a_news.pk %}">Read more</a></p>
     <div>
         {% include 'likes/add_like_news.html' with news_id=object.id %}
     </div>

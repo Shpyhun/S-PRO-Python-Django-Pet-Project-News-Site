@@ -3,14 +3,11 @@
 {% block content %}
 
 <body>
-<h1>News author</h1>
+<h1>{{title}}</h1>
 <div>
     <p>User: {{user.first_name}} {{user.last_name}}</p>
     <h2>{{news.title}}</h2>
-<!--    <p1>Age: {{author.age}}</p1><br><br>-->
 
-    <button><a href="{% url 'sorted' user.id %}">News list this author</a></button> <button><a href="{% url 'news_list' %}">Newss list</a></button><br><br>
-    <button><a onclick="history.back();return false;">goBack</a></button>
 </div>
 
 </body>
