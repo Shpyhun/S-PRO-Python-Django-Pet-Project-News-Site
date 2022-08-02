@@ -6,9 +6,10 @@ from django.views import View
 from django.views.generic import CreateView
 
 from accounts.forms import RegisterUserForm, LoginUserForm
+from news.utils import DataMixin
 
 
-class RegisterUser(CreateView):
+class RegisterUser(DataMixin, CreateView):
     form_class = RegisterUserForm
     success_url = reverse_lazy('login')
     template_name = 'accounts/register.html'
@@ -18,6 +19,11 @@ class RegisterUser(CreateView):
         login(self.request, user)
         return redirect('news_list')
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title='Register')
+        return dict(list(context.items()) + list(c_def.item()))
+
 
 class LoginUser(LoginView):
     form_class = LoginUserForm
@@ -25,6 +31,11 @@ class LoginUser(LoginView):
 
     def get_success_url(self):
         return reverse_lazy('news_list')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title='Login')
+        return dict(list(context.items()) + list(c_def.item()))
 
 
 class LogoutUser(View):

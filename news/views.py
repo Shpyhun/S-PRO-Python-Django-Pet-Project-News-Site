@@ -1,19 +1,17 @@
-from django.http import HttpResponseNotFound, Http404
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseNotFound
 from django.shortcuts import render, get_object_or_404
 from django.views import View
 from django.views.generic import ListView
 
 from news.forms import AddNewsForm, CommentForm
 from news.models import *
-
-# from news.models import Category, News, Profile, CommentNews
-
-menu = [{'title': 'Add news', 'url_name': 'add_news'},
-        {'title': 'Weather', 'url_name': 'add_news'}
-        ]
+from .utils import *
 
 
-class NewsView(View):
+class NewsView(DataMixin, ListView):
+
+
     def post(self, request):
         form = AddNewsForm(request.POST)
         if form.is_valid():
@@ -43,8 +41,8 @@ class NewsView(View):
         return render(request, 'news/news_list.html', context=context)
 
 
-def news_detail(request, index):
-    news = get_object_or_404(News, pk=index)
+def news_detail(request, news_slug):
+    news = get_object_or_404(News, slug=news_slug)
     comments = Comment.objects.filter(news=news)
     if request.method == 'POST':
         form = CommentForm(request.POST)
@@ -72,9 +70,9 @@ def user_info(request, user):
     return render(request, 'news/profile.html', context=context)
 
 
-class AddNewsView(View):
+class AddNewsView(LoginRequiredMixin, View):
     def post(self, request):
-        form = AddNewsForm(request.POST, request.FILES)
+        form = AddNewsForm(request.POST, request.FILES  )
         if form.is_valid():
             form.save()
             news = News.objects.all().order_by('-id')
@@ -90,8 +88,7 @@ class AddNewsView(View):
         return render(request, 'news/add_news.html', context=context)
 
 
-# class Category(DataMixin, ListView):
-class ViewCategory(ListView):
+class ViewCategory(DataMixin, ListView):
     model = News
     template_name = 'news/news_list.html'
     context_object_name = 'news'
@@ -103,12 +100,12 @@ class ViewCategory(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title='Category - ' + str(context['news'][0].category),
-                                      category_selected=context['news'][0].category_slug)
+                                      category_selected=context['news'][0].category_id)
         return dict(list(context.items()) + list(c_def.items()))
 
 
 def view_category(request, category_slug):
-    news = News.objects.filter(pk=category_slug)
+    news = News.objects.filter(slug=category_slug)
     categories = Category.objects.all()
 
     # if len(news) == 0:
