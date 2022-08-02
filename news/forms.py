@@ -1,15 +1,15 @@
 from django import forms
 
-from news.models import News, CommentNews
+from news.models import News, Comment
 
 
-class NewsForm(forms.ModelForm):
+class AddNewsForm(forms.ModelForm):
     class Meta:
         model = News
-        fields = ['title', 'content', 'photo', 'likes']
+        fields = ['title', 'slug', 'content', 'photo', 'is_published', 'category']
 
 
 class CommentForm(forms.ModelForm):
     class Meta:
-        model = CommentNews
-        fields = ['text']
+        model = Comment
+        fields = ['text', ]

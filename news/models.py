@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
@@ -8,19 +9,18 @@ class News(models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=100, unique=True, db_index=True, verbose_name="URL")
     content = models.TextField(blank=True)
-    photo = models.ImageField(upload_to='photo/%Y/%m/%d/')
+    photo = models.ImageField(upload_to='photos/%Y/%m/%d/')
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(default=True)
-    category = models.ForeignKey('Category', on_delete=models.PROTECT, null=True)
-    # user = models.ForeignKey(User, verbose_name='User', on_delete=models.CASCADE)
-    likes = models.ManyToManyField(User)
+    category = models.ForeignKey('Category', on_delete=models.PROTECT)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, verbose_name='User')
 
     def __str__(self):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('news', kwargs={'news_slug': self.slug})
+        return reverse('news', kwargs={'news_slug': self.pk})
 
     class Meta:
         verbose_name = 'News'
@@ -57,10 +57,10 @@ class Profile(models.Model):
         return reverse('profile', kwargs={'profile_id': self.pk})
 
 
-class CommentNews(models.Model):
+class Comment(models.Model):
     """News comment model"""
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    news = models.ForeignKey(News, on_delete=models.SET_NULL, null=True)
+    news = models.ForeignKey('News', on_delete=models.SET_NULL, null=True)
     text = models.TextField(max_length=500)
     time_create = models.DateTimeField(auto_now_add=True)
 

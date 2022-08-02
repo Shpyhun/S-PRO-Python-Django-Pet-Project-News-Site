@@ -2,17 +2,34 @@
 
 {% block content %}
 
-<body>
-<h1>News list</h1>
-{% for a_news in news %}
-<div>
-    <h2>{{a_news.title | upper}}</h2>
-    <p>{{a_news.content | slice:100}}</p>
-    <p1>Date add: {{a_news.time_update|date:"d-m-Y"}}</p1><br><br>
-    <button><a href="{% url 'news_detail' a_news.id %}">Read more</a></button>
-    <hr>
-</div>
-{% endfor %}
 
+<h1>{{title}}</h1>
+<ul class="list-articles">
+    {% for a_news in news %}
+        <li><div class="article-panel">
+    <p class="first">Category: {{a_news.category}}</p>
+    <p class="last">Date: {{a_news.time_update|date:"d-m-Y H:i:s"}}</p>
+</div>
+
+    {% if a_news.photo %}
+    <p><img class="img-article-left" src="{{a_news.photo.url}}"></p>
+    {%endif%}
+
+    <li><h2>{{a_news.title}}</h2>
+    <p>{{a_news.content | slice:300}}</p>
+
+        <p class="link-read-post"><a href="{% url 'news_detail' a_news.slug %}">Read more</a></p>
+    <div>
+        {% include 'likes/add_like_news.html' with news_id=object.id %}
+    </div>
+    <div>
+        <a href="{{ object.get_absolute_url }}#comments"> comments</a>
+    </div>
+
+<!--    <div class="clear"></div>-->
+    </li>
+
+    {% endfor %}
+</ul>
 {% endblock %}
 

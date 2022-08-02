@@ -7,13 +7,13 @@
     {% if user.is_active %}
     <form action="" method="post">
         {% csrf_token %}
-        {{ com_form.as_p }}
+        {{ comment_form.as_p }}
         <input type="submit" value="Add comment"/>
     </form>
     {% else %}
-    <h2>You need to sign, to leave a review</h2>
+    <h2>You need to sign, to leave a comment</h2>
     {% endif %}
-    <hr>
+    </hr>
 
     {% for comment in comments %}
     <p>Comment: {{comment.text}}</p>

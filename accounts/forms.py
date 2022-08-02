@@ -17,4 +17,10 @@ class RegisterUserForm(UserCreationForm):
 
 class LoginUserForm(AuthenticationForm):
     email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-input'}))
+    # email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'autocomplete': 'email', 'class': 'form-control'}))
     password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
+    # password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'autocomplete': 'email', 'class': 'form-control'}))
+
+    class Meta:
+        model = User
+        fields = ('email', 'password1')

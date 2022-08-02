@@ -4,6 +4,9 @@
     <ul id="mainmenu" class="mainmenu">
     <li class="logo"><a href="{% url 'news_list' %}"><img src="{% static 'news/images/logo.png' %}" alt=""></a>
         IT NEWS</li>
+    {% for item in menu %}
+        <li><a href="{% url item.url_name %}">{{item.title}}</a></li>
+    {%endfor%}
 
     {% if request.user.is_authenticated %}
     <li class="last">{{user.username}} | <a href="{% url 'logout'%}"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a></li>

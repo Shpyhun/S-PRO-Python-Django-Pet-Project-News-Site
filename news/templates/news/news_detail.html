@@ -6,11 +6,18 @@
 <h1>Contents of the news</h1>
 <div>
     <h2>{{news.title}}</h2>
-    <p>{{news.content}}</p>
 
+{% if news.photo %}
+<p><img class="img-article-left" src="{{news.photo.url}}"></p>
+{% endif %}
+    <p>{{news.content|linebreaks}}</p>
+    <div class="row">
+        <div class="col">
+            {% include 'likes/add_like_news.html' with news_id=object.id %}
+        </div>
+        <div class="col"> {{ comment_count }} comments{{ comments_count }} </div>
+    </div>
     <p2>Date add: {{news.time_update|date:"d-m-Y"}}</p2><br><br>
-    <button><a href="#">News author</a></button> <button><a href="{% url 'news_list' %}">News list</a></button>
-
 
 </div>
 {% include 'news/comment.html' %}
