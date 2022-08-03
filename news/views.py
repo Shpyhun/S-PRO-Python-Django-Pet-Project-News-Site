@@ -8,10 +8,12 @@ from news.forms import AddNewsForm, CommentForm
 from news.models import *
 from .utils import *
 
+menu = [{'title': 'Add news', 'url_name': 'add_news'},
+        {'title': 'Weather', 'url_name': 'weather'}
+        ]
 
-class NewsView(DataMixin, ListView):
 
-
+class NewsView(View):
     def post(self, request):
         form = AddNewsForm(request.POST)
         if form.is_valid():
@@ -54,20 +56,14 @@ def news_detail(request, news_slug):
     else:
         form = CommentForm()
     context = {
-        'news': news,
         'menu': menu,
+        'news': news,
         'title': 'Add news',
         'comment_form': form,
         'comments': comments,
-        # 'categories_selected': news.category_id,
+        'categories_selected': news.category_id,
     }
     return render(request, 'news/news_detail.html', context=context)
-
-
-def user_info(request, user):
-    user = get_object_or_404(Profile, pk=user)
-    context = {'user': user}
-    return render(request, 'news/profile.html', context=context)
 
 
 class AddNewsView(LoginRequiredMixin, View):
@@ -76,7 +72,11 @@ class AddNewsView(LoginRequiredMixin, View):
         if form.is_valid():
             form.save()
             news = News.objects.all().order_by('-id')
-        context = {'news': news, 'post_form': AddNewsForm}
+        context = {
+            'menu': menu,
+            'news': news,
+            'title': 'Add news',
+            'post_form': AddNewsForm}
         return render(request, 'news/add_news.html', context=context)
 
     def get(self, request):
@@ -84,11 +84,15 @@ class AddNewsView(LoginRequiredMixin, View):
         if request.method == "GET" and 'qwerty' in request.GET:
             qwerty = request.GET['qwerty']
             news = news.filter(title__icontains=qwerty)
-        context = {'news': news, 'post_form': AddNewsForm}
+        context = {
+            'menu': menu,
+            'news': news,
+            'title': 'Add news',
+            'post_form': AddNewsForm}
         return render(request, 'news/add_news.html', context=context)
 
 
-class ViewCategory(DataMixin, ListView):
+class ViewCategory(ListView):
     model = News
     template_name = 'news/news_list.html'
     context_object_name = 'news'
@@ -113,8 +117,7 @@ def view_category(request, category_slug):
 
     context = {
         'menu': menu,
-        'news': news,
-        'title': 'View by topics',
+        'title': 'View by topic',
         'categories': categories,
         'categories_selected': category_slug,
     }

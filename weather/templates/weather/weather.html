@@ -1,0 +1,19 @@
+{% extends 'news/base.html' %}
+
+{% block content %}
+
+<body>
+{% for info in all_info %}
+<h1>{{title}} in {{info.city}}</h1>
+<div>
+    <p>Today: {{day}}</p>
+    <p>Temperature: {{info.temp}} C<sup>o</sup></p>
+    <p>Sky Condition: {{info.description}}</p>
+    <img src="http://openweathermap.org/img/w/{{info.icon}}.png" width="100px" />
+    <hr>
+</div>
+{% endfor %}
+
+</body>
+
+{% endblock %}

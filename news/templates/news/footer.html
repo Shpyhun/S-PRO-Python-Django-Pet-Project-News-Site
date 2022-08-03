@@ -1,10 +1,15 @@
 <div class="footer">
+        {% if request.user.is_authenticated %}
+            <li class="last"><a href="{% url 'profile' %}"> Profile {{user.username}}</a></li>
+        {% else %}
+            <li class="last"><a href="#"></a></li>
+        {% endif %}
     <p><a href="https://github.com/Shpyhun/S-PRO-Python-Django-Pet-Project-News-Site.git"><i class="fa-brands fa-github"></i> GitHub</a>
-    <a href="https://www.linkedin.com/in/shpygun/"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
+    <a href="https://ua.linkedin.com/in/shpygun?trk=profile-badge"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
     <a href="https://www.facebook.com/shpygun"><i class="fa-brands fa-square-facebook"></i> Facebook</a>
     <a href="https://www.youtube.com/channel/UCfUb67X832tfY2uNE7d7IMQ"><i class="fa-brands fa-youtube"></i> Youtube</a>
     </p>
     <h> Сopying allowed 2022</h>
 
-
 </div>
+

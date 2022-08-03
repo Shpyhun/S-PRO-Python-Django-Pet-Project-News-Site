@@ -17,7 +17,7 @@ class News(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, verbose_name='User')
 
     def __str__(self):
-        return self.title
+        return f"{self.pk} {self.title}"
 
     def get_absolute_url(self):
         return reverse('news', kwargs={'news_slug': self.slug})
@@ -43,18 +43,6 @@ class Category(models.Model):
         verbose_name = 'Category'
         verbose_name_plural = 'Categories'
         ordering = ['id']
-
-
-class Profile(models.Model):
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    user = models.OneToOneField(User, on_delete=models.SET_NULL, blank=True, null=True)
-
-    def __str__(self):
-        return self.user
-
-    def get_absolute_url(self):
-        return reverse('profile', kwargs={'profile_id': self.pk})
 
 
 class Comment(models.Model):

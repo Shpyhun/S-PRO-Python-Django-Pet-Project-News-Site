@@ -12,5 +12,6 @@ urlpatterns = [
     path('', include('news.urls')),
     path('accounts/', include('accounts.urls')),
     path('likes/', include('likes.urls')),
+    path('weather/', include('weather.urls')),
     # path('weather/', include('weather.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

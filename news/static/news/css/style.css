@@ -146,7 +146,7 @@ aside h3 {
 aside ul {list-style: none}
 aside ul li {
     color: #fff;
-    display: block;
+
     margin-top: 20px;
     transition: transform .5s ease;
 }
@@ -179,6 +179,7 @@ main .futures p {max-width: 400px; margin: 20px auto}
 	font-family: Verdana, Geneva, Arial, Helvetica;
 	text-align: center;
 	overflow: hidden;
+	text-decoration:none;
 }
 
 
