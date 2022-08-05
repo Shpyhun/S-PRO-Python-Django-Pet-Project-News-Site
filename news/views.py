@@ -1,129 +1,129 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseNotFound
 from django.shortcuts import render, get_object_or_404
-from django.views import View
-from django.views.generic import ListView
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, DetailView, ListView
 
 from news.forms import AddNewsForm, CommentForm
-from news.models import *
-from .utils import *
+from news.models import News, Comment, Category
+from news.utils import DataMixin
 
 menu = [{'title': 'Add news', 'url_name': 'add_news'},
-        {'title': 'Weather', 'url_name': 'weather'}
+        {'title': 'Weather', 'url_name': 'weather'},
         ]
 
 
-class NewsView(View):
-    def post(self, request):
-        form = AddNewsForm(request.POST)
-        if form.is_valid():
-            form.save()
-        news = News.objects.all().order_by('-id')
-        context = {
-            'menu': menu,
-            'news': news,
-            'post_form': AddNewsForm,
-            'title': 'News',
-            'categories_selected': 0,
-        }
-        return render(request, 'news/news_list.html', context=context)
+class NewsView(ListView):
+    # paginate_by = 3
+    # model = News
+    # template_name = 'news/news_list.html'
+    # context_object_name = 'news'
 
     def get(self, request):
-        news = News.objects.all().order_by('-id')
-        if request.method == "GET" and 'qwerty' in request.GET:
-            qwerty = request.GET['qwerty']
-            news = news.filter(title__icontains=qwerty)
+        news = News.objects.filter(is_published=True)
+        if search := request.GET.get('search'):
+            news = news.filter(title__icontains=search)
         context = {
             'menu': menu,
-            'news': news,
-            'post_form': AddNewsForm,
             'title': 'News',
+            'news': news,
             'categories_selected': 0,
         }
         return render(request, 'news/news_list.html', context=context)
 
 
-def news_detail(request, news_slug):
-    news = get_object_or_404(News, slug=news_slug)
-    comments = Comment.objects.filter(news=news)
-    if request.method == 'POST':
+class NewsDetail(DetailView):
+    slug_url_kwarg = 'news_slug'
+    context_object_name = 'news'
+
+    def get(self, request, news_slug):
+        news = get_object_or_404(News, slug=news_slug)
+        comments = Comment.objects.filter(news=news)
+        form = CommentForm()
+        context = {
+            'menu': menu,
+            'news': news,
+            'title': 'News',
+            'comment_form': form,
+            'comments': comments,
+        }
+        return render(request, 'news/news_detail.html', context=context)
+
+    def post(self, request, news_slug):
+        # news = News.objects.all().order_by('-id')
+        news = get_object_or_404(News, slug=news_slug)
+        comments = Comment.objects.filter(news=news)
         form = CommentForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
             comment.user = request.user
             comment.news = news
             comment.save()
-    else:
         form = CommentForm()
-    context = {
-        'menu': menu,
-        'news': news,
-        'title': 'Add news',
-        'comment_form': form,
-        'comments': comments,
-        'categories_selected': news.category_id,
-    }
-    return render(request, 'news/news_detail.html', context=context)
-
-
-class AddNewsView(LoginRequiredMixin, View):
-    def post(self, request):
-        form = AddNewsForm(request.POST, request.FILES  )
-        if form.is_valid():
-            form.save()
-            news = News.objects.all().order_by('-id')
         context = {
             'menu': menu,
             'news': news,
-            'title': 'Add news',
-            'post_form': AddNewsForm}
-        return render(request, 'news/add_news.html', context=context)
-
-    def get(self, request):
-        news = News.objects.all().order_by('-id')
-        if request.method == "GET" and 'qwerty' in request.GET:
-            qwerty = request.GET['qwerty']
-            news = news.filter(title__icontains=qwerty)
-        context = {
-            'menu': menu,
-            'news': news,
-            'title': 'Add news',
-            'post_form': AddNewsForm}
-        return render(request, 'news/add_news.html', context=context)
+            'title': 'News',
+            'comment_form': form,
+            'comments': comments,
+        }
+        return render(request, 'news/news_detail.html', context=context)
 
 
-class ViewCategory(ListView):
-    model = News
-    template_name = 'news/news_list.html'
-    context_object_name = 'news'
-    allow_empty = False
+# def news_detail(request, news_slug):
+#     news = get_object_or_404(News, slug=news_slug)
+#     comments = Comment.objects.filter(news=news)
+#     if request.method == 'POST':
+#         form = CommentForm(request.POST)
+#         if form.is_valid():
+#             comment = form.save(commit=False)
+#             comment.user = request.user
+#             comment.news = news
+#             comment.save()
+#     else:
+#         form = CommentForm()
+#     context = {
+#         'menu': menu,
+#         'news': news,
+#         'title': 'Add news',
+#         'comment_form': form,
+#         'comments': comments,
+#         'categories_selected': news.category_id,
+#     }
+#     return render(request, 'news/news_detail.html', context=context)
 
-    def get_queryset(self):
-        return News.objects.filter(category__slug=self.kwargs['category_slug'], is_published=True)
+class AddNewsView(LoginRequiredMixin, DataMixin, CreateView):
+    form_class = AddNewsForm
+    template_name = 'news/add_news.html'
+    success_url = reverse_lazy('news_list')
+    raise_exception = True
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        c_def = self.get_user_context(title='Category - ' + str(context['news'][0].category),
-                                      category_selected=context['news'][0].category_id)
+        c_def = self.get_user_context(title="Add news")
         return dict(list(context.items()) + list(c_def.items()))
 
 
-def view_category(request, category_slug):
-    news = News.objects.filter(slug=category_slug)
-    categories = Category.objects.all()
+class CategoryView(DataMixin, ListView):
+    context_object_name = 'news'
+    allow_empty = False
 
-    # if len(news) == 0:
-    #     raise Http404()
+    def get(self, request, category_slug):
+        news = News.objects.filter(category__slug=category_slug)
+        categories = Category.objects.all()
+        # if len(news) == 0:
+        #     raise Http404()
+        context = {
+            'menu': menu,
+            'news': news,
+            'title': 'View by topic',
+            'categories': categories,
+            'categories_selected': category_slug,
+        }
+        return render(request, 'news/news_list.html', context=context)
 
-    context = {
-        'menu': menu,
-        'title': 'View by topic',
-        'categories': categories,
-        'categories_selected': category_slug,
-    }
-
-    return render(request, 'news/news_list.html', context=context)
-
+    # def get_queryset(self):
+    #     return News.objects.filter(category__slug=self.kwargs['category_slug'])
 
 def page_not_found(request, exception):
     return HttpResponseNotFound('<h1>Sorry. Page not found</h1>')

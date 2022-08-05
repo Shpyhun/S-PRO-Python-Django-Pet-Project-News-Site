@@ -1,6 +1,6 @@
 <div class="footer">
         {% if request.user.is_authenticated %}
-            <li class="last"><a href="{% url 'profile' %}"> Profile {{user.username}}</a></li>
+            <li class="last"><a href="{% url 'profile' user.pk %}"> Profile {{user.username}}</a></li>
         {% else %}
             <li class="last"><a href="#"></a></li>
         {% endif %}

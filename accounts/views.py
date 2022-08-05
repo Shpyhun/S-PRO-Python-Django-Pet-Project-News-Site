@@ -40,8 +40,8 @@ class ProfileDetail(DetailView):
     success_url = reverse_lazy('profile')
     template_name = 'accounts/profile.html'
 
-    def get_queryset(self, profile_slug):
-        return Profile.objects.get(slug=profile_slug)
+    def get_queryset(self, profile_id):
+        return Profile.objects.get(pk=profile_id)
 
-    def profil(request, profile_slug):
-        profile = Profile.objects.get(slug=profile_slug)
+
+

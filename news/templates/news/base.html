@@ -25,19 +25,18 @@
 
         <ul>
         {% if category_selected == 0 %}
-            <p class="selected">Topics</p>
+            <h class="selected">Topics</h>
         {% else %}
             <h><a href="{% url 'news_list' %}">Topics</a></h>
         {% endif %}
 
+        {% view_categories 'slug' category_selected %}
 
-          {% view_categories 'id' category_selected %}
-
-            <input type="text" name="qwerty">
-            <input type="submit" value="Search">
-            </form>
-
-        </ul>
+        <form action="{% url 'news_list' %}" method="get">
+        <input type="text" name="search">
+        <input type="submit" value="Search">
+        </form>
+          </ul>
 
 
 
@@ -45,10 +44,9 @@
     <div class="content-text">
         {% block content %}
         {% endblock %}
-
     </div>
 
-       </td></tr></table>
+</td></tr></table>
 
 {% include 'news/footer.html' %}
 </body>

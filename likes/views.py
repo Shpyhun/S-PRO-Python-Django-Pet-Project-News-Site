@@ -1,9 +1,17 @@
 from django.contrib.auth.models import User
-from django.shortcuts import redirect
+from django.http import request, HttpResponseRedirect
+from django.shortcuts import redirect, get_object_or_404
+from django.urls import reverse
 from django.views import View
 
 from likes.models import NewsLikes
 from news.models import News
+
+
+def LikeView(request, pk):
+    news = get_object_or_404(News, id=request.POST.get('news_detail'))
+    news.likes.add(request.user)
+    return HttpResponseRedirect(reverse('news_detail', args=[str(pk)]))
 
 
 class AddLikeView(View):
