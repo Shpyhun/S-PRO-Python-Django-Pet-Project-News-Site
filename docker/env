@@ -1,0 +1,7 @@
+PG_USER=postgres
+PG_PASSWORD=postgres
+PG_NAME=postgres
+PG_PORT=5432
+PG_HOST=postgres_db
+
+WEATHERID=6867a217a4843aa95e5a3195b528843c

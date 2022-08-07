@@ -13,8 +13,8 @@
     <p>{{news.content|linebreaks}}</p>
 </div>
 <hr>
-<div>
-<!---->
+{% include 'likes/like.html' %}
+
     <p2>Date add: {{news.time_update|date:"d-m-Y"}}</p2><br><br>
 
 </div>

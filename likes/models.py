@@ -14,5 +14,5 @@ class NewsLikes(models.Model):
         return f'{self.liked_by}: {self.news} {self.like}'
 
     class Meta:
-        verbose_name = 'News_like'
-        verbose_name_plural = 'News_likes'
+        verbose_name = 'Like news'
+        verbose_name_plural = 'Likes news'

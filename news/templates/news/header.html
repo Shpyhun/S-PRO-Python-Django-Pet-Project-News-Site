@@ -2,19 +2,19 @@
 {% block content %}
 <div class="header">
     <ul id="mainmenu" class="mainmenu">
-    <li class="logo"><a href="{% url 'news_list' %}"><img src="{% static 'news/images/logo.png' %}" alt=""></a>
-        IT NEWS</li>
-    {% for item in menu %}
+        <li class="logo"><a href="{% url 'news_list' %}"><img src="{% static 'news/images/logo.png' %}" alt=""></a>
+            IT NEWS</li>
+        {% for item in menu %}
         <li><a href="{% url item.url_name %}">{{item.title}}</a></li>
-    {%endfor%}
+        {%endfor%}
 
-    {% if request.user.is_authenticated %}
-    <li class="last">{{user.first_name}} | <a href="{% url 'logout' %}"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a></li>
-    {% else %}
-    <li class="last"><a href="{% url 'register' %}"><i class="fa-solid fa-registered"></i> Register</a> |
-        <a href="{% url 'login' %}"><i class="fa-solid fa-arrow-right-to-bracket"></i> Sign in</a></li>
-    {% endif %}
+        {% if request.user.is_authenticated %}
+            <li class="last">{{user.first_name}} | <a href="{% url 'logout' %}"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a></li>
+        {% else %}
+            <li class="last"><a href="{% url 'register' %}"><i class="fa-solid fa-registered"></i> Register</a> |
+                <a href="{% url 'login' %}"><i class="fa-solid fa-arrow-right-to-bracket"></i> Login</a></li>
+        {% endif %}
     </ul>
- </div>
+</div>
 
 {% endblock %}

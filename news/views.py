@@ -14,10 +14,10 @@ menu = [{'title': 'Add news', 'url_name': 'add_news'},
 
 
 class NewsView(ListView):
-    # paginate_by = 3
-    # model = News
-    # template_name = 'news/news_list.html'
-    # context_object_name = 'news'
+    paginate_by = 3
+    model = News
+    template_name = 'news/news_list.html'
+    context_object_name = 'news'
 
     def get(self, request):
         news = News.objects.filter(is_published=True)
@@ -31,6 +31,11 @@ class NewsView(ListView):
         }
         return render(request, 'news/news_list.html', context=context)
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="News")
+        return dict(list(context.items()) + list(c_def.items()))
+
 
 class NewsDetail(DetailView):
     slug_url_kwarg = 'news_slug'
@@ -40,10 +45,17 @@ class NewsDetail(DetailView):
         news = get_object_or_404(News, slug=news_slug)
         comments = Comment.objects.filter(news=news)
         form = CommentForm()
+        # total_likes = news.total_likes()
+        # liked = False
+        # if news.likes.filter(id=self.request.user.id).exists():
+        #     liked = True
+
         context = {
             'menu': menu,
             'news': news,
             'title': 'News',
+            # 'total_likes': total_likes,
+            # 'liked': liked,
             'comment_form': form,
             'comments': comments,
         }
@@ -60,10 +72,16 @@ class NewsDetail(DetailView):
             comment.news = news
             comment.save()
         form = CommentForm()
+        total_likes = news.total_likes()
+        liked = False
+        if news.likes.filter(id=self.request.user.id).exists():
+            liked = True
         context = {
             'menu': menu,
             'news': news,
             'title': 'News',
+            'total_likes': total_likes,
+            'liked': liked,
             'comment_form': form,
             'comments': comments,
         }

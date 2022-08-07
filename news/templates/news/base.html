@@ -16,37 +16,40 @@
     <link rel="stylesheet" href="{% static 'news/css/style.css' %}">
 </head>
 <body>
+
 {% include 'news/header.html' %}
 
 
 <table class="table-content" border=0 cellpadding="0" cellspacing="0">
     <tr>
-    <aside>
+        <aside>
+            <form class="form-inline" action="{% url 'news_list' %}" method="get">
+                <input class="form-control" type="text" placeholder="Search" name="search">
+                <input class="btn btn btn-outline-dark" type="submit" value="Search">
+            </form>
+            <br><br/>
+            <ul>
+                {% if category_selected == 0 %}
+                <h class="selected">Topics</h>
+                {% else %}
+                <h><a href="{% url 'news_list' %}">Topics</a></h>
+                {% endif %}
 
-        <ul>
-        {% if category_selected == 0 %}
-            <h class="selected">Topics</h>
-        {% else %}
-            <h><a href="{% url 'news_list' %}">Topics</a></h>
-        {% endif %}
-
-        {% view_categories 'slug' category_selected %}
-
-        <form action="{% url 'news_list' %}" method="get">
-        <input type="text" name="search">
-        <input type="submit" value="Search">
-        </form>
-          </ul>
+                {% view_categories 'slug' category_selected %}
 
 
+            </ul>
 
-    </aside>
-    <div class="content-text">
-        {% block content %}
-        {% endblock %}
-    </div>
+<!--            {% include 'weather/home.html' %}-->
 
-</td></tr></table>
+
+        </aside>
+        <div class="content-text">
+            {% block content %}
+            {% endblock %}
+        </div>
+
+        </td></tr></table>
 
 {% include 'news/footer.html' %}
 </body>

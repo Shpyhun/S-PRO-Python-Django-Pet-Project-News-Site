@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth.models import User
+
+from accounts.models import User
 
 
 class RegisterUserForm(UserCreationForm):
@@ -16,11 +17,18 @@ class RegisterUserForm(UserCreationForm):
 
 
 class LoginUserForm(AuthenticationForm):
-    email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-input'}))
-    # email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'autocomplete': 'email', 'class': 'form-control'}))
-    password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
-    # password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'autocomplete': 'email', 'class': 'form-control'}))
+    username = forms.CharField(label='Email',  widget=forms.EmailInput(attrs={'class': 'form-input'}))
+    password = forms.CharField(label='Password')
 
     class Meta:
         model = User
-        fields = ('email', 'password1')
+        fields = ('username', 'password1')
+
+
+class UpdateUserForm(forms.ModelForm):
+    first_name = forms.CharField(label='First name', widget=forms.TextInput(attrs={'class': 'form-input'}))
+    last_name = forms.CharField(label='Last name', widget=forms.TextInput(attrs={'class': 'form-input'}))
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name']

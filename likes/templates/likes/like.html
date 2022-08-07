@@ -1,0 +1,29 @@
+{% block content %}
+
+<form href="{% url 'like_news' news.id %}" method="POST">
+  {% csrf_token %}
+
+  {% if user.is_active %}
+    {% if liked %}
+  <button type="submit" name="news_slug " value="{{ news.id}}"
+          class="btn btn-danger btn-sm">Dislike</button>
+    {% else %}
+  <button type="submit" name="news_slug " value="{{ news.id}}"
+          class="btn btn-primary btn-sm">Like</button>
+    {% endif %}
+  {% else %}
+  <small><a href="{% url 'login' %}"> Login </a> to like</small>
+  {% endif %}
+
+  - {{ total_likes }} Likes
+
+</form>
+<div class="row">
+  <div class="col">
+    {% include 'likes/add_like_news.html' with news_id=object.id %}
+  </div>
+  <div class="col"> {{ comment_count }} comments{{ comments_count }} </div>
+</div>
+{% endblock content %}
+
+

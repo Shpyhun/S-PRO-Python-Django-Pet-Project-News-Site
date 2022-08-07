@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'fontawesomefree',
     'likes',
     'weather',
+    'allauth',
 ]
 
 MIDDLEWARE = [
@@ -68,14 +69,15 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost',
-        'PORT': 5432,
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get('PG_NAME'),
+        'USER': os.environ.get('PG_USER'),
+        'PASSWORD': os.environ.get('PG_PASSWORD'),
+        'HOST': os.environ.get('PG_HOST'),
+        'PORT': os.environ.get('PG_PORT'),
     }
 }
 
@@ -112,7 +114,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-# AUTH_USER_MODEL = 'accounts.User'
+AUTH_USER_MODEL = 'accounts.User'
 
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
 ACCOUNT_USERNAME_MIN_LENGTH = 4
