@@ -1,10 +1,7 @@
 from allauth.account.models import EmailAddress
-from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager
-from django.contrib.auth.models import AbstractUser, PermissionsMixin, User
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
@@ -30,6 +27,11 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', False)
         return self._create_user(email, password, first_name, last_name, **extra_fields)
 
+    def create_superuser(self, email, first_name, last_name, password, **extra_fields):
+        extra_fields.setdefault('is_active', True)
+        extra_fields.setdefault('is_superuser', True)
+        return self._create_user(email, first_name, last_name, password, **extra_fields)
+
 
 class User(AbstractUser):
     username = models.CharField(
@@ -41,8 +43,8 @@ class User(AbstractUser):
     email = models.EmailField(verbose_name='email', unique=True, max_length=60)
     email_verify = models.BooleanField(default=False)
 
-    # def __str__(self):
-    #     return f"{self.pk}"
+    def __str__(self):
+        return f"{self.pk}"
 
     def account_verified(self):
         if self.user.is_authenticated:
@@ -54,7 +56,7 @@ class User(AbstractUser):
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    REQUIRED_FIELDS = ['first_name', 'last_name']
 
     def get_username(self):
         return self.email
@@ -62,38 +64,9 @@ class User(AbstractUser):
     class Meta:
         verbose_name = 'User'
         verbose_name_plural = "Users"
-        ordering = ['id', 'email']
+        ordering = ['email', ]
 
     def get_absolute_url(self):
         return reverse('profile', kwargs={'user_id': self.pk})
 
-
-# class Profile(models.Model):
-#     slug = models.SlugField(max_length=100, unique=True, db_index=True, verbose_name="URL", null=True)
-#     first_name = models.CharField(max_length=100)
-#     last_name = models.CharField(max_length=100)
-#     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
-#     email = models.EmailField()
-#
-#     def __str__(self):
-#         return self.user
-#
-#     def get_absolute_url(self):
-#         return reverse('profile', kwargs={'profile_id': self.pk})
-#
-#     class Meta:
-#         verbose_name = 'Profile'
-#         verbose_name_plural = 'Profiles'
-#         ordering = ['id', 'user']
-#
-#
-# @receiver(post_save, sender=User)
-# def create_user_profile(sender, instance, created, **kwargs):
-#     if created:
-#         Profile.objects.create(user=instance)
-#
-#
-# @receiver
-# def save_user_profile(sender, instance, **kwargs):
-#     instance.profile.save()
 

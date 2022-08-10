@@ -14,7 +14,7 @@ class News(models.Model):
     is_published = models.BooleanField(default=True)
     category = models.ForeignKey('Category', on_delete=models.PROTECT)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, verbose_name='User')
-    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='news_post')
+    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, through='likes.NewsLikes', related_name='news_post')
 
     def total_likes(self):
         return self.likes.count()

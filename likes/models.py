@@ -7,7 +7,7 @@ from news.models import News
 class NewsLikes(models.Model):
     news = models.ForeignKey(News, on_delete=models.SET_NULL, null=True)
     liked_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
-    like = models.BooleanField('Like', default=False)
+    like = models.BooleanField(default=False)
     time_create = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

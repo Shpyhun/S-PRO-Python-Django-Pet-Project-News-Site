@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator
 from django.http import HttpResponseNotFound
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
@@ -14,19 +15,20 @@ menu = [{'title': 'Add news', 'url_name': 'add_news'},
 
 
 class NewsView(ListView):
-    paginate_by = 3
-    model = News
     template_name = 'news/news_list.html'
     context_object_name = 'news'
 
     def get(self, request):
-        news = News.objects.filter(is_published=True)
+        news = News.objects.all().filter(is_published=True)
+        paginator = Paginator(news, 3)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
         if search := request.GET.get('search'):
-            news = news.filter(title__icontains=search)
+            page_obj = news.filter(title__icontains=search)
         context = {
             'menu': menu,
             'title': 'News',
-            'news': news,
+            'news': page_obj,
             'categories_selected': 0,
         }
         return render(request, 'news/news_list.html', context=context)
@@ -45,8 +47,8 @@ class NewsDetail(DetailView):
         news = get_object_or_404(News, slug=news_slug)
         comments = Comment.objects.filter(news=news)
         form = CommentForm()
-        # total_likes = news.total_likes()
-        # liked = False
+        total_likes = news.total_likes()
+        liked = news.likes.filter(id=self.request.user.id).exists()
         # if news.likes.filter(id=self.request.user.id).exists():
         #     liked = True
 
@@ -54,8 +56,8 @@ class NewsDetail(DetailView):
             'menu': menu,
             'news': news,
             'title': 'News',
-            # 'total_likes': total_likes,
-            # 'liked': liked,
+            'total_likes': total_likes,
+            'liked': liked,
             'comment_form': form,
             'comments': comments,
         }
