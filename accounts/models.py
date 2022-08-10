@@ -6,7 +6,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
-from django.utils.translation import gettext_lazy
+from django.utils.translation import gettext_lazy as _
 
 
 class CustomUserManager(BaseUserManager):
@@ -33,7 +33,7 @@ class CustomUserManager(BaseUserManager):
 
 class User(AbstractUser):
     username = models.CharField(
-        gettext_lazy('username'),
+        _('username'),
         null=True,
         blank=True,
         max_length=150,
@@ -41,8 +41,8 @@ class User(AbstractUser):
     email = models.EmailField(verbose_name='email', unique=True, max_length=60)
     email_verify = models.BooleanField(default=False)
 
-    def __str__(self):
-        return f"{self.pk}"
+    # def __str__(self):
+    #     return f"{self.pk}"
 
     def account_verified(self):
         if self.user.is_authenticated:
@@ -51,10 +51,10 @@ class User(AbstractUser):
                 return result[0].verified
         return False
 
-    # objects = CustomUserManager()
+    objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', ]
+    REQUIRED_FIELDS = ['username']
 
     def get_username(self):
         return self.email
@@ -62,10 +62,9 @@ class User(AbstractUser):
     class Meta:
         verbose_name = 'User'
         verbose_name_plural = "Users"
-        ordering = ['email', ]
+        ordering = ['id', 'email']
 
     def get_absolute_url(self):
-        # return reverse('users:profile', kwargs={'user': self.username})
         return reverse('profile', kwargs={'user_id': self.pk})
 
 
