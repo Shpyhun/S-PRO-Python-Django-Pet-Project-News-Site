@@ -5,10 +5,10 @@
 
   {% if user.is_active %}
     {% if liked %}
-  <button type="submit" name="news_slug " value="{{ news.id}}"
+  <button type="submit" name="news_id " value="{{ news.id}}"
           class="btn btn-danger btn-sm">Dislike</button>
     {% else %}
-  <button type="submit" name="news_slug " value="{{ news.id}}"
+  <button type="submit" name="news_id" value="{{ news.id}}"
           class="btn btn-primary btn-sm">Like</button>
     {% endif %}
   {% else %}

@@ -1,6 +1,9 @@
 from django.conf import settings
+
 from django.db import models
 from django.urls import reverse
+
+from accounts.models import User
 
 
 class News(models.Model):
@@ -13,8 +16,8 @@ class News(models.Model):
     time_update = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(default=True)
     category = models.ForeignKey('Category', on_delete=models.PROTECT)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, verbose_name='User')
-    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, through='likes.NewsLikes', related_name='news_post')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name='User')
+    likes = models.ManyToManyField(User, related_name='news_post')
 
     def total_likes(self):
         return self.likes.count()
@@ -50,10 +53,14 @@ class Category(models.Model):
 
 class Comment(models.Model):
     """News comment model"""
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
-    news = models.ForeignKey('News', on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    news = models.ForeignKey('News', on_delete=models.CASCADE, null=True)
     text = models.TextField(max_length=500)
     time_create = models.DateTimeField(auto_now_add=True)
+
+    def get_total_comments(self):
+        return self.text.count()
+
 
     def __str__(self):
         return self.text

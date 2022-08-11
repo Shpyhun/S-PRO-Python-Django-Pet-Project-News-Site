@@ -8,7 +8,7 @@ from news.models import News
 
 
 def LikeView(request, pk):
-    news = get_object_or_404(News, id=request.POST.get('news_detail'))
+    news = get_object_or_404(News, id=request.POST.get('news_id'))
     liked = False
     if news.likes.filter(id=request.user.id).exists():
         news.likes.remove(request.user)

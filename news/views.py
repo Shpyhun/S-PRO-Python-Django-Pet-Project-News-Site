@@ -47,10 +47,12 @@ class NewsDetail(DetailView):
         news = get_object_or_404(News, slug=news_slug)
         comments = Comment.objects.filter(news=news)
         form = CommentForm()
+        # total_comments = Comment.objects.filter(news=news).get_total_comments()
         total_likes = news.total_likes()
-        liked = news.likes.filter(id=self.request.user.id).exists()
-        # if news.likes.filter(id=self.request.user.id).exists():
-        #     liked = True
+        # liked = news.likes.filter(id=self.request.user.id).exists()
+        liked = False
+        if news.likes.filter(id=self.request.user.id).exists():
+            liked = True
 
         context = {
             'menu': menu,
@@ -60,6 +62,7 @@ class NewsDetail(DetailView):
             'liked': liked,
             'comment_form': form,
             'comments': comments,
+            # 'total_comments': total_comments,
         }
         return render(request, 'news/news_detail.html', context=context)
 
@@ -74,18 +77,21 @@ class NewsDetail(DetailView):
             comment.news = news
             comment.save()
         form = CommentForm()
-        total_likes = news.total_likes()
-        liked = False
-        if news.likes.filter(id=self.request.user.id).exists():
-            liked = True
+        # total_comments = Comment.objects.filter(news=news).get_total_comments()
+        # total_likes = news.total_likes()
+        # # liked = news.likes.filter(id=self.request.user.id).exists()
+        # liked = False
+        # if news.likes.filter(id=self.request.user.id).exists():
+        #     liked = True
         context = {
             'menu': menu,
             'news': news,
             'title': 'News',
-            'total_likes': total_likes,
-            'liked': liked,
+            # 'total_likes': total_likes,
+            # 'liked': liked,
             'comment_form': form,
             'comments': comments,
+            # 'total_comments': total_comments,
         }
         return render(request, 'news/news_detail.html', context=context)
 

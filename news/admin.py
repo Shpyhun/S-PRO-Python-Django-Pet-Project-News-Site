@@ -17,6 +17,7 @@ class NewsAdmin(admin.ModelAdmin):
             return mark_safe(f"<img src='{object.photo.url}' width=60>")
 
     get_html_photo.short_description = "Photo"
+    
 # class NewsAdmin(admin.ModelAdmin):
 #     list_display = ['id', 'title', 'get_html_photo', 'content', 'category', 'slug', 'is_published']
 #     search_fields = ['title', ]

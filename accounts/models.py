@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 class CustomUserManager(BaseUserManager):
-    def _create_user(self, email, password, first_name, last_name, **extra_fields):
+    def _create_user(self, email, first_name, last_name, password, **extra_fields):
         if not email:
             raise ValueError('Email must be provided')
         if not password:
@@ -22,13 +22,13 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_user(self, email, password, first_name, last_name, **extra_fields):
-        extra_fields.setdefault('is_active', True)
+    def create_user(self, email, first_name, last_name, password, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', False)
-        return self._create_user(email, password, first_name, last_name, **extra_fields)
+        return self._create_user(email, first_name, last_name, password, **extra_fields)
 
     def create_superuser(self, email, first_name, last_name, password, **extra_fields):
-        extra_fields.setdefault('is_active', True)
+        extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         return self._create_user(email, first_name, last_name, password, **extra_fields)
 
@@ -44,7 +44,7 @@ class User(AbstractUser):
     email_verify = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.pk}"
+        return f"{self.first_name}"
 
     def account_verified(self):
         if self.user.is_authenticated:
