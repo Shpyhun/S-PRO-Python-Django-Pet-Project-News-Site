@@ -16,17 +16,19 @@ class News(models.Model):
     time_update = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(default=True)
     category = models.ForeignKey('Category', on_delete=models.PROTECT)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name='User')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='User')
     likes = models.ManyToManyField(User, related_name='news_post')
 
+    # @property
     def total_likes(self):
+        # return self.likes.all().count()
         return self.likes.count()
 
     def __str__(self):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('news', kwargs={'news_slug': self.slug})
+        return reverse('news', kwargs={'news_slug': self.slug, 'news_id': self.pk})
 
     class Meta:
         verbose_name = 'News'
@@ -60,7 +62,6 @@ class Comment(models.Model):
 
     def get_total_comments(self):
         return self.text.count()
-
 
     def __str__(self):
         return self.text

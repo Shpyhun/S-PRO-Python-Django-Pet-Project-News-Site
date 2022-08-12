@@ -11,11 +11,12 @@
     <p><img class="img-article-left" src="{{news.photo.url}}"></p>
     {% endif %}
     <p>{{news.content|linebreaks}}</p>
+    <hr>
+        <p2>Date add: {{news.time_update|date:"d-m-Y"}}</p2
 </div>
 <hr>
-{% include 'likes/like.html' %}
-
-    <p2>Date add: {{news.time_update|date:"d-m-Y"}}</p2><br><br>
+{% include 'news/like.html' %}
+<br><br>
 
 </div>
 {% include 'news/comment.html' %}

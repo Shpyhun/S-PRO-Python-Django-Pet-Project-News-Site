@@ -2,7 +2,7 @@
 
 
 <hr>
-<p>News comments</p>
+<p>News comments: </p>
 <div>
     {% if user.is_active %}
     <form action="" method="post">
@@ -20,6 +20,7 @@
     <p1>User: {{comment.user}} |</p1>
     <p2>Date: {{comment.time_create|date:"d-m-Y"}}</p2><br><br>
     {% endfor %}
+
 
 </div>
 

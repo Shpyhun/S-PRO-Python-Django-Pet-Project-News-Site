@@ -1,25 +1,39 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
+from django.views import View
 from django.views.generic import CreateView, DetailView, ListView
+from django.views.generic.detail import BaseDetailView
+from rest_framework import serializers, generics, mixins, viewsets
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView
+from rest_framework.mixins import CreateModelMixin
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.viewsets import GenericViewSet
 
+from accounts.models import User
 from news.forms import AddNewsForm, CommentForm
-from news.models import News, Comment, Category
+from news.models import Comment, Category, News
+from news.serializers import AddCommentSerializer, NewsSerializer, CategorySerializer, UserSerializer
 from news.utils import DataMixin
+from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
 
 menu = [{'title': 'Add news', 'url_name': 'add_news'},
         {'title': 'Weather', 'url_name': 'weather'},
         ]
 
 
-class NewsView(ListView):
+class NewsView(View):
     template_name = 'news/news_list.html'
     context_object_name = 'news'
 
     def get(self, request):
-        news = News.objects.all().filter(is_published=True)
+        news = News.objects.all().filter(is_published=True).order_by('-id')
         paginator = Paginator(news, 3)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
@@ -40,7 +54,7 @@ class NewsView(ListView):
 
 
 class NewsDetail(DetailView):
-    slug_url_kwarg = 'news_slug'
+    # slug_url_kwarg = 'news_slug'
     context_object_name = 'news'
 
     def get(self, request, news_slug):
@@ -49,10 +63,10 @@ class NewsDetail(DetailView):
         form = CommentForm()
         # total_comments = Comment.objects.filter(news=news).get_total_comments()
         total_likes = news.total_likes()
-        # liked = news.likes.filter(id=self.request.user.id).exists()
-        liked = False
-        if news.likes.filter(id=self.request.user.id).exists():
-            liked = True
+        liked = news.likes.filter(id=self.request.user.id).exists()
+        # liked = False
+        # if news.likes.filter(id=self.request.user.id).exists():
+        #     liked = True
 
         context = {
             'menu': menu,
@@ -78,8 +92,8 @@ class NewsDetail(DetailView):
             comment.save()
         form = CommentForm()
         # total_comments = Comment.objects.filter(news=news).get_total_comments()
-        # total_likes = news.total_likes()
-        # # liked = news.likes.filter(id=self.request.user.id).exists()
+        total_likes = news.total_likes()
+        liked = news.likes.filter(id=self.request.user.id).exists()
         # liked = False
         # if news.likes.filter(id=self.request.user.id).exists():
         #     liked = True
@@ -87,8 +101,8 @@ class NewsDetail(DetailView):
             'menu': menu,
             'news': news,
             'title': 'News',
-            # 'total_likes': total_likes,
-            # 'liked': liked,
+            'total_likes': total_likes,
+            'liked': liked,
             'comment_form': form,
             'comments': comments,
             # 'total_comments': total_comments,
@@ -151,5 +165,75 @@ class CategoryView(DataMixin, ListView):
     # def get_queryset(self):
     #     return News.objects.filter(category__slug=self.kwargs['category_slug'])
 
+
+class LikeView(View):
+
+    def post(self, request, pk):
+        news = get_object_or_404(News, id=pk)
+        if news.likes.filter(id=request.user.id).exists():
+            news.likes.remove(request.user)
+        else:
+            news.likes.add(request.user)
+        return HttpResponseRedirect(reverse('news_detail', args=[news.slug]))
+
+
 def page_not_found(request, exception):
     return HttpResponseNotFound('<h1>Sorry. Page not found</h1>')
+
+
+class CreateCommentViewSet(CreateModelMixin, GenericViewSet):
+    serializer_class = AddCommentSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class NewsViewSet(mixins.ListModelMixin,
+                      viewsets.GenericViewSet):
+    queryset = News.objects.all()
+    serializer_class = NewsSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['user', 'category', 'time_update']
+    search_fields = ['title']
+
+
+class NewsDetailAPIView(generics.ListCreateAPIView):
+    queryset = News.objects.all()
+    serializer_class = NewsSerializer
+
+
+class CategoryAPIView(mixins.ListModelMixin,
+                      viewsets.GenericViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name']
+
+
+class ProfileUpdate(RetrieveUpdateAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+    queryset = User.objects.all()
+
+    def get_object(self):
+        return self.get_queryset().get(id=self.request.user.id)
+
+    #
+    # def get_object(self, pk):
+    #     try:
+    #         return User.objects.get(pk=pk)
+    #     except User.DoesNotExist:
+    #         raise Http404
+
+    # def get_profile(self, request, pk, format=None):
+    #     snippet = self.get_object(pk)
+    #     serializer = UserSerializer(snippet)
+    #     return Response(serializer.data)
+
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #     queryset = queryset.filter(user=self.request.user)
+    #     return queryset
+
+
+
+
+

@@ -1,29 +1,33 @@
 {% block content %}
 
-<form href="{% url 'like_news' news.id %}" method="POST">
+<form action="{% url 'like_news' news.pk %}" method="POST">
   {% csrf_token %}
 
-  {% if user.is_active %}
-    {% if liked %}
-  <button type="submit" name="news_id " value="{{ news.id}}"
+  {% if user.is_authenticated %}
+  {% if liked %}
+  <button type="submit" name="news_id" value="{{ news.id}}"
           class="btn btn-danger btn-sm">Dislike</button>
-    {% else %}
+  {% else %}
   <button type="submit" name="news_id" value="{{ news.id}}"
           class="btn btn-primary btn-sm">Like</button>
-    {% endif %}
+  {% endif %}
   {% else %}
   <small><a href="{% url 'login' %}"> Login </a> to like</small>
   {% endif %}
 
-  - {{ total_likes }} Likes
+  - {{ total_likes }} Likes ||   {{  comments.count }} - Comments
 
 </form>
 <div class="row">
   <div class="col">
     {% include 'likes/add_like_news.html' with news_id=object.id %}
   </div>
-  <div class="col"> {{ comment_count }} comments{{ comments_count }} </div>
 </div>
 {% endblock content %}
 
 
+<!--    {% if not liked %}-->
+
+<!--  <button type="submit" name="news_id" value="{{ news.id}}"-->
+<!--          class="btn btn-primary btn-sm">Like</button>-->
+<!--    {% endif %}-->
