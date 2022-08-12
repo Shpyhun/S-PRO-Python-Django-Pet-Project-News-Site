@@ -32,3 +32,26 @@ class WeatherView(View):
             'day': day,
         }
         return render(request, 'weather/weather.html', context)
+
+
+class WeatherHomeView(View):
+
+    def get(self, request):
+        # raise Exception('city')
+        url = 'https://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid=' + os.environ.get('WEATHERID')
+        city = 'London'
+        res = requests.get(url.format(city)).json()
+        city_info = {
+            'city': city,
+            'description': res['weather'][0]['description'],
+            'temp': res['main']['temp'],
+            'icon': res['weather'][0]['icon'],
+        }
+        day = datetime.date.today()
+        context = {
+            # 'menu': menu,
+            # 'title': 'Weather',
+            'info': city_info,
+
+        }
+        return render(request, 'weather/index.html', context)

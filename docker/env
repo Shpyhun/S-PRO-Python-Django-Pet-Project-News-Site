@@ -6,4 +6,6 @@ PG_HOST=postgres_db
 
 WEATHERID=6867a217a4843aa95e5a3195b528843c
 
+WEATHER_ID=998edfc80ba9f0dc18e18ab80a65d826
+
 S_KEY=django-insecure-_%7^dygeglrk%us9+n9+43jim)9u6j#xprp@%1k2(aess84c9p

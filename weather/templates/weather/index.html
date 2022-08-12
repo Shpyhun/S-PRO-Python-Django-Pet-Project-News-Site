@@ -1,0 +1,17 @@
+
+{% block content %}
+
+<body>
+    <hr>
+<div>
+    <p>Today: {{info.city}}</p>
+    <p>Temperature: {{info.temp}} C<sup>o</sup></p>
+<!--    <p>Sky Condition: {{info.description}}</p>-->
+    <img src="http://openweathermap.org/img/w/{{ info.icon }}.png" width="50px" />
+
+</div>
+
+
+</body>
+
+{% endblock %}

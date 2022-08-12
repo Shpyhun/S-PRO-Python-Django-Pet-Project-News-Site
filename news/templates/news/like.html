@@ -15,19 +15,9 @@
   <small><a href="{% url 'login' %}"> Login </a> to like</small>
   {% endif %}
 
-  - {{ total_likes }} Likes ||   {{  comments.count }} - Comments
+  - {{ get_total_likes }} Likes ||   {{  comments.count }} - Comments
 
 </form>
-<div class="row">
-  <div class="col">
-    {% include 'likes/add_like_news.html' with news_id=object.id %}
-  </div>
-</div>
+
 {% endblock content %}
 
-
-<!--    {% if not liked %}-->
-
-<!--  <button type="submit" name="news_id" value="{{ news.id}}"-->
-<!--          class="btn btn-primary btn-sm">Like</button>-->
-<!--    {% endif %}-->

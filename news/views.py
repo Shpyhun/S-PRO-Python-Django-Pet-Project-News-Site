@@ -5,14 +5,12 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic import CreateView, DetailView, ListView
-from django.views.generic.detail import BaseDetailView
-from rest_framework import serializers, generics, mixins, viewsets
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
+from rest_framework import generics, mixins, viewsets
+from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.mixins import CreateModelMixin
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 
 from accounts.models import User
@@ -20,8 +18,6 @@ from news.forms import AddNewsForm, CommentForm
 from news.models import Comment, Category, News
 from news.serializers import AddCommentSerializer, NewsSerializer, CategorySerializer, UserSerializer
 from news.utils import DataMixin
-from rest_framework import filters
-from django_filters.rest_framework import DjangoFilterBackend
 
 menu = [{'title': 'Add news', 'url_name': 'add_news'},
         {'title': 'Weather', 'url_name': 'weather'},
@@ -54,20 +50,14 @@ class NewsView(View):
 
 
 class NewsDetail(DetailView):
-    # slug_url_kwarg = 'news_slug'
     context_object_name = 'news'
 
     def get(self, request, news_slug):
         news = get_object_or_404(News, slug=news_slug)
         comments = Comment.objects.filter(news=news)
         form = CommentForm()
-        # total_comments = Comment.objects.filter(news=news).get_total_comments()
-        total_likes = news.total_likes()
+        total_likes = news.get_total_likes
         liked = news.likes.filter(id=self.request.user.id).exists()
-        # liked = False
-        # if news.likes.filter(id=self.request.user.id).exists():
-        #     liked = True
-
         context = {
             'menu': menu,
             'news': news,
@@ -76,12 +66,10 @@ class NewsDetail(DetailView):
             'liked': liked,
             'comment_form': form,
             'comments': comments,
-            # 'total_comments': total_comments,
         }
         return render(request, 'news/news_detail.html', context=context)
 
     def post(self, request, news_slug):
-        # news = News.objects.all().order_by('-id')
         news = get_object_or_404(News, slug=news_slug)
         comments = Comment.objects.filter(news=news)
         form = CommentForm(request.POST)
@@ -91,12 +79,8 @@ class NewsDetail(DetailView):
             comment.news = news
             comment.save()
         form = CommentForm()
-        # total_comments = Comment.objects.filter(news=news).get_total_comments()
-        total_likes = news.total_likes()
+        total_likes = news.get_total_likes
         liked = news.likes.filter(id=self.request.user.id).exists()
-        # liked = False
-        # if news.likes.filter(id=self.request.user.id).exists():
-        #     liked = True
         context = {
             'menu': menu,
             'news': news,
@@ -105,32 +89,9 @@ class NewsDetail(DetailView):
             'liked': liked,
             'comment_form': form,
             'comments': comments,
-            # 'total_comments': total_comments,
         }
         return render(request, 'news/news_detail.html', context=context)
 
-
-# def news_detail(request, news_slug):
-#     news = get_object_or_404(News, slug=news_slug)
-#     comments = Comment.objects.filter(news=news)
-#     if request.method == 'POST':
-#         form = CommentForm(request.POST)
-#         if form.is_valid():
-#             comment = form.save(commit=False)
-#             comment.user = request.user
-#             comment.news = news
-#             comment.save()
-#     else:
-#         form = CommentForm()
-#     context = {
-#         'menu': menu,
-#         'news': news,
-#         'title': 'Add news',
-#         'comment_form': form,
-#         'comments': comments,
-#         'categories_selected': news.category_id,
-#     }
-#     return render(request, 'news/news_detail.html', context=context)
 
 class AddNewsView(LoginRequiredMixin, DataMixin, CreateView):
     form_class = AddNewsForm
@@ -187,7 +148,7 @@ class CreateCommentViewSet(CreateModelMixin, GenericViewSet):
 
 
 class NewsViewSet(mixins.ListModelMixin,
-                      viewsets.GenericViewSet):
+                  viewsets.GenericViewSet):
     queryset = News.objects.all()
     serializer_class = NewsSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]

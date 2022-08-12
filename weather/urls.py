@@ -1,7 +1,8 @@
 from django.urls import path
 
-from weather.views import WeatherView
+from weather.views import WeatherView, WeatherHomeView
 
 urlpatterns = [
-    path('', WeatherView.as_view(), name='weather'),
+    path('weather/index',  WeatherHomeView.as_view(), name='weather_index'),
+    path('weather/', WeatherView.as_view(), name='weather'),
 ]
