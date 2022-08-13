@@ -16,11 +16,11 @@ class UserAdmin(admin.ModelAdmin):
     search_fields = ['first_name', 'last_name']
     readonly_fields = ['first_name', 'last_name']
 
-    def has_add_permission(self, request):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        return False
+    # def has_add_permission(self, request):
+    #     return False
+    #
+    # def has_delete_permission(self, request, obj=None):
+    #     return False
 
 
 

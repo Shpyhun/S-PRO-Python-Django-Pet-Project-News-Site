@@ -19,15 +19,17 @@ class CustomUserManager(BaseUserManager):
             **extra_fields
         )
         user.set_password(password)
-        user.save(using=self._db)
+        user.save()
         return user
 
     def create_user(self, email, first_name, last_name, password, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_active', True)
+        extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
         return self._create_user(email, first_name, last_name, password, **extra_fields)
 
     def create_superuser(self, email, first_name, last_name, password, **extra_fields):
+        extra_fields.setdefault('is_active', True)
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         return self._create_user(email, first_name, last_name, password, **extra_fields)
@@ -48,9 +50,8 @@ class User(AbstractUser):
 
     def account_verified(self):
         if self.user.is_authenticated:
-            result = EmailAddress.objects.filter(email=self.user.email)
-            if len(result):
-                return result[0].verified
+            result = EmailAddress.objects.filter(email=self.user.email).exists()
+            return result[0].verified
         return False
 
     objects = CustomUserManager()

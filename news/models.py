@@ -54,8 +54,8 @@ class Category(models.Model):
 
 class Comment(models.Model):
     """News comment model"""
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
-    news = models.ForeignKey('News', on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    news = models.ForeignKey(News, on_delete=models.CASCADE, null=True)
     text = models.TextField(max_length=500)
     time_create = models.DateTimeField(auto_now_add=True)
 

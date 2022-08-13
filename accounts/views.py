@@ -8,7 +8,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse_lazy, reverse
 from django.utils.http import urlsafe_base64_decode
 from django.views import View
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 
 from accounts.forms import RegisterUserForm, LoginUserForm, UpdateUserForm
 from accounts.models import User
@@ -64,37 +64,46 @@ class EmailVerify(View):
 
 class LoginUser(LoginView):
     form_class = LoginUserForm
+    success_url = reverse_lazy('news_list')
     template_name = 'accounts/login.html'
-
-    def get_success_url(self):
-        return reverse_lazy('news_list')
 
 
 class LogoutUser(View):
+
     def get(self, request):
         logout(request)
         return redirect(reverse('news_list'))
 
 
-@login_required
-def profile(request):
-    user = request.user
-    return render(request, 'accounts/profile.html', {'user': user})
+class Profile(View):
+
+    def get(self, request):
+        user = request.user
+        return render(request, 'accounts/profile.html', {'user': user})
 
 
-@login_required
-def profile_update(request):
-    user = request.user
-    if request.method == "POST":
+class ProfileUpdate(UpdateView):
+
+    def get(self, request):
+        user = request.user
+        default_data = {
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+        }
+        form = UpdateUserForm(default_data)
+        return render(request, 'accounts/profile_update.html', {'form': form, 'user': user})
+
+    def post(self, request):
+        user = request.user
+        default_data = {
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+        }
         form = UpdateUserForm(request.POST)
         if form.is_valid():
             user.first_name = form.cleaned_data['first_name']
             user.last_name = form.cleaned_data['last_name']
             user.save()
             return HttpResponseRedirect(reverse('profile'))
-    else:
-        default_data = {
-            'first_name': user.first_name, 'last_name': user.last_name,
-        }
         form = UpdateUserForm(default_data)
-    return render(request, 'accounts/profile_update.html', {'form': form, 'user': user})
+        return render(request, 'accounts/profile_update.html', {'form': form, 'user': user})
