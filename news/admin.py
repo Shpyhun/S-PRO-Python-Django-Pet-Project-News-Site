@@ -25,49 +25,14 @@ class NewsAdmin(admin.ModelAdmin):
 
     get_html_photo.short_description = "Photo"
 
+    def likes_count(self):
+        return self.likes.count()
+
     def comments_count(self, news):
         comments = Comment.objects.filter(news=news)
         comments_count = comments.count()
         return comments_count
 
-    # def get_comments_count(self, object):
-    #     pass
-    #
-    # def get_queryset(self, request):
-    #     queryset = super().get_queryset(request)
-    #     queryset = queryset.annotate(
-    #         _comment_count=Count("comment", distinct=True),
-    #     )
-    #     return queryset
-
-    # def comment_count(self, obj):
-    #     return obj.comment_set.count()
-
-    # def comment_count(self, obj):
-    #     return obj._comment_count
-
-    # comment_count.admin_order_field = '_comment_count'
-
-
-# @admin.register(Comment)
-# class CommentAdmin(admin.ModelAdmin):
-#     list_display = ('id', 'text', 'news', 'user')
-#     search_fields = ['text', 'news']
-#     list_filter = ['text', 'news']
-
-    # def get_queryset(self, request):
-    #     queryset = super().get_queryset(request)
-    #     queryset = queryset.annotate(
-    #         _text_count=Count("t", distinct=True),
-    #         _villain_count=Count("villain", distinct=True),
-    #     )
-    #     return queryset
-
-    # def comment_count(self, obj):
-    #     return obj.comment_set.count()
-
-    # def has_delete_permission(self, *args, **kwargs):
-    #     return False
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):

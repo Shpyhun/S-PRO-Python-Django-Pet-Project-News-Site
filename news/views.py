@@ -56,7 +56,7 @@ class NewsDetail(DetailView):
         news = get_object_or_404(News, slug=news_slug)
         comments = Comment.objects.filter(news=news)
         form = CommentForm()
-        total_likes = news.likes_count
+        total_likes = news.likes.count()
         liked = news.likes.filter(id=self.request.user.id).exists()
         context = {
             'menu': menu,
@@ -80,7 +80,7 @@ class NewsDetail(DetailView):
             comment.save()
         form = CommentForm()
 
-        total_likes = news.likes_count
+        total_likes = news.likes.count()
         liked = news.likes.filter(id=self.request.user.id).exists()
         context = {
             'menu': menu,

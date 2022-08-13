@@ -14,10 +14,10 @@ def get_categories(filter=None):
 
 
 @register.inclusion_tag('news/list_categories.html')
-def view_categories(sort=None, category_selected=0):
+def view_categories(sort=None, category_slug=0):
 
     if not sort:
         categories = Category.objects.all()
     else:
         categories = Category.objects.order_by(sort)
-    return {'categories': categories, 'category_selected': category_selected}
+    return {'categories': categories, 'category_selected': category_slug}
