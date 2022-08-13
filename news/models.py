@@ -20,7 +20,7 @@ class News(models.Model):
     likes = models.ManyToManyField(User, related_name='news_post')
 
     @property
-    def get_total_likes(self):
+    def likes_count(self):
         return self.likes.count()
 
     def __str__(self):
@@ -54,15 +54,15 @@ class Category(models.Model):
 
 class Comment(models.Model):
     """News comment model"""
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='comment')
     news = models.ForeignKey(News, on_delete=models.CASCADE, null=True)
     text = models.TextField(max_length=500)
     time_create = models.DateTimeField(auto_now_add=True)
 
-    @property
-    def comment_count(self, object):
-        comment_count = Comment.objects.all()
-        return comment_count.count()
+    # @property
+    # def comment_count(self, object):
+    #     comment_count = Comment.objects.all()
+    #     return comment_count.count()
 
     # @property
     # def comment_count(self, obj):

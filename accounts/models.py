@@ -48,7 +48,7 @@ class User(AbstractUser):
     def __str__(self):
         return f"{self.first_name}"
 
-    def account_verified(self):
+    def account_verified(self):                                 #TODO dont work right(active)
         if self.user.is_authenticated:
             result = EmailAddress.objects.filter(email=self.user.email).exists()
             return result[0].verified
