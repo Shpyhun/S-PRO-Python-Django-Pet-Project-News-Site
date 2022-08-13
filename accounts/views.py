@@ -98,38 +98,3 @@ def profile_update(request):
         }
         form = UpdateUserForm(default_data)
     return render(request, 'accounts/profile_update.html', {'form': form, 'user': user})
-
-
-
-
-
-# class ProfileDetail(DetailView):
-#     def get(self, request, pk):
-#         user = get_object_or_404(User, pk=pk)
-#         form = UpdateUserForm(request, instance=request.user)
-#         return render(request, 'accounts/profile.html', {'form': form, 'user': user})
-#
-#     def post(self, request):
-#         form = UpdateUserForm(request, instance=request.user)
-#         if form.is_valid():
-#             form.save()
-#             messages.success(request, 'Your profile is updated successfully')
-#             return redirect(to='profile')
-#         form = UpdateUserForm(instance=request.user)
-#         return render(request, 'accounts/profile.html', {'form': form})
-
-
-# <p>Welcome, {{ user.username }}.
-#     {% if not user.profile.account_verified %}
-#     (Unverified email.)
-#     {% endif %}
-# </p>
-        # if request.method == 'POST':
-        #     user_form = UpdateUserForm(request.POST, instance=request.user)
-        #     if user_form.is_valid():
-        #         user_form.save()
-        #         messages.success(request, 'Your profile is updated successfully')
-        #         return redirect(to='users-profile')
-        # else:
-        #     user_form = UpdateUserForm(instance=request.user)
-        # return render(request, 'accounts/profile.html', {'user_form': user_form})

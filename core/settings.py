@@ -30,7 +30,6 @@ INSTALLED_APPS = [
     'accounts',
     'news',
     'fontawesomefree',
-    'likes',
     'weather',
     'allauth',
     'rest_framework',
@@ -124,6 +123,14 @@ ACCOUNT_USERNAME_MIN_LENGTH = 4
 LOGIN_DIRECT_URL = "/"
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# EMAIL_HOST: хост SMTP-сервера, по умолчанию — localhost.
+# EMAIL_PORT: порт SMTP, по умолчанию — 25.
+# EMAIL_HOST_USER: имя пользователя SMTP-сервера.
+# EMAIL_HOST_PASSWORD: пароль SMTP-сервера.
+# EMAIL_USE_TLS: использовать ли безопасное TLS-соединение.
+# EMAIL_USE_SSL: использовать ли безопасное SSL-соединение.
+
 
 
 # Static files (CSS, JavaScript, Images)

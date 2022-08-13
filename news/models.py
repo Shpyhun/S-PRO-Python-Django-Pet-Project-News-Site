@@ -59,6 +59,11 @@ class Comment(models.Model):
     text = models.TextField(max_length=500)
     time_create = models.DateTimeField(auto_now_add=True)
 
+    @property
+    def comment_count(self, object):
+        comment_count = Comment.objects.all()
+        return comment_count.count()
+
     # @property
     # def comment_count(self, obj):
     #     return obj.comment_set.count()
