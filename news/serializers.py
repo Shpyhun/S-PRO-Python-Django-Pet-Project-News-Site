@@ -9,6 +9,7 @@ class AddCommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
+        # fields = "__all__"
         fields = ['news', 'text', 'user']
         read_only_fields = ('user',)
         # extra_kwargs = {'user': {'read_only': True}}
@@ -26,10 +27,11 @@ class NewsSerializer(serializers.ModelSerializer):
 
 
 class NewsDetailSerializer(serializers.ModelSerializer):
+    comments = AddCommentSerializer()
 
     class Meta:
         model = News
-        fields = ('title', 'content', 'photo', 'likes')
+        fields = ('title', 'content', 'photo', 'likes', 'comments')
 
 
 class CategorySerializer(serializers.ModelSerializer):

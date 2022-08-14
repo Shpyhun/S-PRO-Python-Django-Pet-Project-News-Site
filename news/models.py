@@ -36,7 +36,7 @@ class News(models.Model):
 
 
 class Category(models.Model):
-    """News category model"""
+    """Category news model"""
     slug = models.SlugField(max_length=100, unique=True, db_index=True, verbose_name="URL")
     name = models.CharField(max_length=100, db_index=True)
 
@@ -54,8 +54,8 @@ class Category(models.Model):
 
 class Comment(models.Model):
     """News comment model"""
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='comment')
-    news = models.ForeignKey(News, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='comments')
+    news = models.ForeignKey(News, on_delete=models.CASCADE, null=True, related_name='comment')
     text = models.TextField(max_length=500)
     time_create = models.DateTimeField(auto_now_add=True)
 
