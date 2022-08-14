@@ -8,5 +8,3 @@
 
 #Database
 *.sqlite3
-
-*.pyc

@@ -19,8 +19,9 @@ class News(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='User')
     likes = models.ManyToManyField(User, related_name='news_post')
 
-    # def likes_count(self):
-    #     return self.likes.count()
+    @property
+    def likes_count(self):
+        return self.likes.count()
 
     def __str__(self):
         return self.title

@@ -25,9 +25,6 @@ class NewsAdmin(admin.ModelAdmin):
 
     get_html_photo.short_description = "Photo"
 
-    def likes_count(self):
-        return self.likes.count()
-
     def comments_count(self, news):
         comments = Comment.objects.filter(news=news)
         comments_count = comments.count()

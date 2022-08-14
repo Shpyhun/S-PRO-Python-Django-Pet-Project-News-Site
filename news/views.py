@@ -11,7 +11,8 @@ from rest_framework import generics, mixins, viewsets
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.mixins import CreateModelMixin
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
 
 from accounts.models import User
 from news.forms import AddNewsForm, CommentForm
@@ -157,9 +158,14 @@ class NewsViewSet(mixins.ListModelMixin,
     search_fields = ['title']
 
 
-class NewsDetailAPIView(generics.ListCreateAPIView):
+class NewsDetailAPIView(viewsets.ReadOnlyModelViewSet):
     queryset = News.objects.all()
     serializer_class = NewsSerializer
+
+    # def get(self, request, *args, **kwargs):
+    #     queryset = News.objects.get(id=self.request.news.id)
+    #     serializer = NewsSerializer(queryset)
+    #     return self.retrieve(request, *args, **kwargs)
 
 
 class CategoryAPIView(mixins.ListModelMixin,

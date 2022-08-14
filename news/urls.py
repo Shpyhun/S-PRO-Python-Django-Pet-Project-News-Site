@@ -1,13 +1,13 @@
 from django.urls import path, include
 from rest_framework import routers
 
-from .views import NewsView, AddNewsView, NewsDetail, CategoryView, LikeView, CreateCommentViewSet,\
-    CategoryAPIView, ProfileUpdate, NewsViewSet
+from .views import NewsView, AddNewsView, NewsDetail, CategoryView, LikeView, CreateCommentViewSet, \
+    CategoryAPIView, ProfileUpdate, NewsViewSet, NewsDetailAPIView
 
 router = routers.SimpleRouter()
 router.register('api/v1/comments', CreateCommentViewSet, basename='comments')
 router.register('api/v1/news', NewsViewSet, basename='news')
-router.register('api/v1/news_detail/<int:pk>', NewsViewSet, basename='news_detail')
+router.register('api/v1/news_detail/<slug:news_slug>', NewsDetailAPIView, basename='news_detail')
 router.register('api/v1/category', CategoryAPIView, basename='category')
 # router.register('api/v1/profile_update', ProfileUpdate, basename='profile_update')
 
