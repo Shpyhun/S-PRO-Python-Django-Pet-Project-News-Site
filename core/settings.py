@@ -123,7 +123,7 @@ AUTH_USER_MODEL = 'accounts.User'
 
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
 ACCOUNT_USERNAME_MIN_LENGTH = 4
-LOGIN_DIRECT_URL = "/"
+# LOGIN_DIRECT_URL = "/"
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
