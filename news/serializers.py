@@ -9,14 +9,8 @@ class AddCommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        # fields = "__all__"
         fields = ['news', 'text', 'user']
         read_only_fields = ('user',)
-        # extra_kwargs = {'user': {'read_only': True}}
-    #
-    # def validate(self, attrs):
-    #     attrs['user'] = self.context['request'].user
-    #     return attrs['user']
 
 
 class NewsSerializer(serializers.ModelSerializer):
