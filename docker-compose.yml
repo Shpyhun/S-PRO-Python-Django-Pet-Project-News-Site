@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.9"
 services:
 
   # Redis
@@ -24,7 +24,7 @@ services:
     build: .
     volumes:
       - .:/docker
-    env_file: '.env'
+    env_file: 'core/env'
     ports:
       - 8000:8000
     image: app:docker
