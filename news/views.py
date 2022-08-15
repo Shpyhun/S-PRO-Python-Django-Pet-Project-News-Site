@@ -161,15 +161,15 @@ class NewsDetailAPIView(RetrieveAPIView):
     serializer_class = NewsDetailSerializer
 
 
-    @action(methods=['post'], detail=True)  #permission_classes=[IsAuthenticated]
-    def get_mark_like(self, request, pk=None):
-        news = self.get_object()
-        if news.likes.filter(id=request.user.id).exists():
-            news.likes.remove(request.user)
-        else:
-            news.likes.add(request.user)
-        serializer = self.get_serializer(news)
-        return Response(serializer.data)
+    # @action(methods=['post'], detail=True)  #permission_classes=[IsAuthenticated]
+    # def get_mark_like(self, request, pk=None):
+    #     news = self.get_object()
+    #     if news.likes.filter(id=request.user.id).exists():
+    #         news.likes.remove(request.user)
+    #     else:
+    #         news.likes.add(request.user)
+    #     serializer = self.get_serializer(news)
+    #     return Response(serializer.data)
 
 
 class CategoryAPIView(mixins.ListModelMixin,
