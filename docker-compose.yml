@@ -24,7 +24,7 @@ services:
     build: .
     volumes:
       - .:/docker
-    env_file: "./docker/env"
+    env_file: '.env'
     ports:
       - 8000:8000
     image: app:docker
@@ -41,7 +41,7 @@ services:
     command: celery -A core worker -l DEBUG
     volumes:
       - .:/docker
-    env_file: "./docker/env"
+    env_file: "core/env"
     environment:
       - DEBUG=1
       - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
