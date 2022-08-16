@@ -6,4 +6,4 @@ RUN apk update \
 WORKDIR /docker
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
-CMD gunicorn django.core.wsgi:application --bind 0.0.0.0:$PORT
+CMD gunicorn docker.wsgi:application --bind 0.0.0.0:$PORT
