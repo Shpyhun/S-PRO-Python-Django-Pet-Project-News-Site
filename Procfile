@@ -1,2 +1,1 @@
-web: gunicorn docker.wsgi:application --log-file - --log-level debug
-heroku ps:scale web=1
+web: gunicorn core.wsgi
