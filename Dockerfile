@@ -1,8 +1,8 @@
 FROM python:3.9-alpine
 ENV PYTHONUNBUFFERED=1
-RUN set -ex \
+RUN apk update \
     && pip install --upgrade pip \
-    && pip install --no-cache-dir -r /docker/requirements.txt \
+    && pip install --no-cache-dir -r requirements.txt \
     && apk add postgresql-dev gcc python3-dev musl-dev
 WORKDIR /docker
 COPY requirements.txt requirements.txt
